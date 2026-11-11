@@ -6,7 +6,7 @@ export function Brand({ className }: { className?: string }) {
       <span className="grid size-7 shrink-0 place-items-center rounded-md bg-foreground text-[13px] font-semibold text-background">
         ₩
       </span>
-      <span className="text-[15px] font-semibold tracking-tight">알림결제</span>
+      <span className="text-[15px] font-semibold tracking-tight">EASY-PG</span>
     </span>
   )
 }

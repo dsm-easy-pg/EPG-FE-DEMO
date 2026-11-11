@@ -23,22 +23,6 @@ const STEPS = [
   },
 ]
 
-const WEBHOOK_FIELDS = [
-  { name: "type", description: "이벤트 종류 (deposit)" },
-  { name: "amount", description: "입금액 (원)" },
-  { name: "depositor", description: "입금자명 (영어 6글자)" },
-  { name: "bank", description: "입금된 은행" },
-  { name: "at", description: "입금 시각 (ISO 8601)" },
-]
-
-const WEBHOOK_SAMPLE = `{
-  "type": "deposit",
-  "amount": 30000,
-  "depositor": "parkjhn",
-  "bank": "shinhan",
-  "at": "2026-11-11T12:56:00+09:00"
-}`
-
 export default function Landing() {
   const [authMode, setAuthMode] = useState<AuthMode | null>(null)
   const deposits = useDeposits()
@@ -59,12 +43,6 @@ export default function Landing() {
             >
               작동 방식
             </a>
-            <a
-              href="#webhook"
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              웹훅
-            </a>
           </nav>
           <div className="ml-auto flex items-center gap-2">
             <Button variant="ghost" onClick={() => setAuthMode("login")}>
@@ -79,14 +57,10 @@ export default function Landing() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-[minmax(0,1fr)_400px] md:px-6 md:py-20">
           <div>
             <h1 className="font-heading text-4xl leading-[1.15] font-semibold tracking-tight text-balance md:text-5xl">
-              입금 알림을
-              <br />
-              웹훅으로 전달합니다
+              EASY-PG
             </h1>
             <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
-              Android 폰에서 감지한 은행 입금 알림을 웹훅으로 보내 줍니다.
-              PG사 연동이나 사업자 등록 없이 무통장입금으로 결제를 처리할 수
-              있습니다.
+              PG사 연동 없이 수수료 없이 무통장 입금 결제!
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Button size="lg" onClick={() => setAuthMode("signup")}>
@@ -153,41 +127,6 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="webhook" className="scroll-mt-14 border-b">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-2 md:px-6">
-          <div>
-            <h2 className="font-heading text-2xl font-semibold tracking-tight">
-              웹훅으로 받는 데이터
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              감지된 입금마다 아래 형식의 JSON이 등록한 URL로 POST 됩니다.
-            </p>
-            <dl className="mt-6 space-y-3 text-sm">
-              {WEBHOOK_FIELDS.map((field) => (
-                <div
-                  key={field.name}
-                  className="grid grid-cols-[110px_1fr] gap-3"
-                >
-                  <dt className="font-mono text-muted-foreground">
-                    {field.name}
-                  </dt>
-                  <dd>{field.description}</dd>
-                </div>
-              ))}
-            </dl>
-            <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-              모든 입금 내역은 대시보드에서 확인하고 CSV로 내보낼 수 있습니다.
-            </p>
-          </div>
-          <div className="self-start overflow-x-auto rounded-lg bg-neutral-950 p-4 font-mono text-xs leading-relaxed text-neutral-300">
-            <div className="text-neutral-500">
-              POST https://your-service.com/webhook
-            </div>
-            <pre className="mt-2">{WEBHOOK_SAMPLE}</pre>
-          </div>
-        </div>
-      </section>
-
       <section>
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-14 md:px-6">
           <p className="text-base font-medium">
@@ -201,7 +140,7 @@ export default function Landing() {
 
       <footer className="border-t">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground md:px-6">
-          <span>알림결제</span>
+          <span>EASY-PG</span>
           <span>휴대폰 입금 알림 기반 결제 알림 API</span>
         </div>
       </footer>
