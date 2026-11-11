@@ -97,6 +97,7 @@ export default function Transactions() {
               variant="outline"
               size="sm"
               onClick={() => exportCsv(filtered)}
+              disabled={filtered.length === 0}
             >
               <Download className="size-3.5" />
               CSV 내보내기

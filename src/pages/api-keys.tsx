@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Copy, Plus, Smartphone, Trash2, TriangleAlert } from "lucide-react"
+import { Copy, Plus, Trash2, TriangleAlert } from "lucide-react"
 import QRCode from "react-qr-code"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
@@ -130,7 +130,7 @@ export default function ApiKeys() {
         </Button>
       </div>
 
-      <div className="grid items-start gap-6 lg:grid-cols-[1fr_300px]">
+      <div className="grid items-start gap-6">
         <Card>
           <CardHeader>
             <CardTitle>발급된 API 키</CardTitle>
@@ -199,25 +199,6 @@ export default function ApiKeys() {
               API 키 원문은 발급 시에만 확인할 수 있습니다. 유출된 키는 삭제 후
               다시 발급하세요.
             </p>
-          </CardContent>
-        </Card>
-
-        <Card size="sm" className="h-fit">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Smartphone className="size-4 text-muted-foreground" />
-              Android 기기 연결
-            </CardTitle>
-            <CardDescription className="leading-relaxed">
-              발급 모달에 표시된 QR 코드를 Android 앱에서 스캔하면 기기가 계정에
-              연결됩니다.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="size-2 rounded-full bg-foreground" />
-              Android 기기 1대 연결됨
-            </div>
           </CardContent>
         </Card>
       </div>

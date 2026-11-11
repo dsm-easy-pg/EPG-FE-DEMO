@@ -1,32 +1,40 @@
-# React + TypeScript + Vite
+# 알림결제 (easy-pg)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+휴대폰 입금 알림을 웹훅으로 전달하는 결제 알림 서비스의 프론트엔드 데모입니다.
+Android 기기에서 감지한 은행 앱 입금 알림을 API 키로 연결된 서버로 전달하고,
+대시보드에서 입금 내역을 확인하고 API 키를 관리할 수 있습니다.
 
-Currently, two official plugins are available:
+## 기술 스택
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 + TypeScript + Vite
+- Tailwind CSS v4 + shadcn/ui (radix, neutral 테마)
+- React Router, recharts, react-qr-code, sonner
 
-## React Compiler
+## 실행
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+데모 계정: `demo` / `demo1234` (계정은 브라우저 localStorage에 저장됩니다)
+
+## 페이지 구성
+
+| 경로 | 설명 |
+| --- | --- |
+| `/` | 랜딩 페이지 (실시간 입금 피드 데모, 로그인/회원가입 모달) |
+| `/app` | 대시보드 (입금 통계, 일별 입금액 차트, 최근 입금 내역) |
+| `/app/transactions` | 입금 내역 (검색, 은행 필터, CSV 내보내기) |
+| `/app/keys` | API 키 관리 (발급 모달 + QR 코드, 만료 표시, 삭제) |
+
+입금 알림은 실제 백엔드 대신 클라이언트 시뮬레이터가 6~15초 간격으로
+더미 입금 이벤트를 생성합니다. 입금자명은 실제 서비스 스펙과 동일하게
+영어 6글자로 표기됩니다.
+
+## 주요 스펙
+
+- API 키는 발급 시에만 원문이 표시되고, 목록에는 마스킹된 값만 노출됩니다.
+- 유효기간이 만료된 키는 삭제되지 않고 빨간색으로 표시되며, 사용자가 직접
+  삭제 버튼을 눌러야 제거됩니다.
+- 발급 모달에는 API 키 원문만 담긴 QR 코드가 표시됩니다.
