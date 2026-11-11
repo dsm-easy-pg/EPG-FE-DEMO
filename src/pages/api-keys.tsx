@@ -138,14 +138,14 @@ export default function ApiKeys() {
           </CardHeader>
           <CardContent className="space-y-4 px-0">
             {keys.length > 0 ? (
-              <Table>
+              <Table className="min-w-[560px]">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>이름</TableHead>
-                    <TableHead>API 키</TableHead>
-                    <TableHead>만료일</TableHead>
-                    <TableHead>상태</TableHead>
-                    <TableHead className="w-10" />
+                    <TableHead className="pl-6">이름</TableHead>
+                    <TableHead className="px-4">API 키</TableHead>
+                    <TableHead className="px-4">만료일</TableHead>
+                    <TableHead className="px-4">상태</TableHead>
+                    <TableHead className="w-12 pr-6" />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -153,27 +153,29 @@ export default function ApiKeys() {
                     const expired = isExpired(key)
                     return (
                       <TableRow key={key.id}>
-                        <TableCell className="font-medium">{key.name}</TableCell>
-                        <TableCell className="font-mono text-xs text-muted-foreground">
+                        <TableCell className="py-3 pl-6 font-medium">
+                          {key.name}
+                        </TableCell>
+                        <TableCell className="px-4 py-3 font-mono text-xs text-muted-foreground">
                           {key.maskedKey}
                         </TableCell>
                         <TableCell
                           className={
                             expired
-                              ? "tabular-nums text-destructive"
-                              : "tabular-nums"
+                              ? "px-4 py-3 tabular-nums text-destructive"
+                              : "px-4 py-3 tabular-nums"
                           }
                         >
                           {formatDate(key.expiresAt)}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="px-4 py-3">
                           {expired ? (
                             <Badge variant="destructive">만료</Badge>
                           ) : (
                             <Badge variant="secondary">활성</Badge>
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="py-3 pr-6">
                           <Button
                             variant="ghost"
                             size="icon-sm"
@@ -221,7 +223,7 @@ export default function ApiKeys() {
       </div>
 
       <Dialog open={issueOpen} onOpenChange={handleIssueOpenChange}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto overscroll-contain sm:max-w-md">
           {!issued ? (
             <>
               <DialogHeader>

@@ -43,12 +43,12 @@ export function AppShell() {
   }, [deposits])
 
   if (!user) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/" replace />
   }
 
   const handleLogout = () => {
     logout()
-    navigate("/login")
+    navigate("/")
   }
 
   return (
@@ -79,7 +79,7 @@ export function AppShell() {
         </nav>
         <div className="mt-auto p-3">
           <Separator className="mb-3" />
-          <div className="flex items-center gap-2 px-2 pb-1">
+          <div className="flex items-center gap-2 pb-1">
             <Avatar className="size-8">
               <AvatarFallback className="text-xs font-medium">
                 {user.username.slice(0, 2).toLowerCase()}
@@ -120,7 +120,7 @@ export function AppShell() {
                 }
               >
                 <item.icon className="size-4" />
-                <span className="hidden xs:inline">{item.label}</span>
+                <span className="hidden sm:inline">{item.label}</span>
               </NavLink>
             ))}
             <Button

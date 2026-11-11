@@ -4,8 +4,6 @@ import { AppShell } from "@/components/app-shell"
 import ApiKeys from "@/pages/api-keys"
 import Dashboard from "@/pages/dashboard"
 import Landing from "@/pages/landing"
-import Login from "@/pages/login"
-import Signup from "@/pages/signup"
 import Transactions from "@/pages/transactions"
 
 export default function App() {
@@ -13,8 +11,6 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
         <Route path="/app" element={<AppShell />}>
           <Route index element={<Dashboard />} />
           <Route path="transactions" element={<Transactions />} />

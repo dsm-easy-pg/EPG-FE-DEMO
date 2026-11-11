@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
+import { useSearchParams } from "react-router-dom"
 import { Download, Search } from "lucide-react"
 import { toast } from "sonner"
 import { DepositTable } from "@/components/deposit-table"
@@ -46,8 +47,24 @@ function exportCsv(rows: Deposit[]) {
 
 export default function Transactions() {
   const deposits = useDeposits()
-  const [query, setQuery] = useState("")
-  const [bank, setBank] = useState("all")
+  const [searchParams, setSearchParams] = useSearchParams()
+  const query = searchParams.get("q") ?? ""
+  const bank = searchParams.get("bank") ?? "all"
+
+  const updateParam = (key: string, value: string) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        if (value && value !== "all") {
+          next.set(key, value)
+        } else {
+          next.delete(key)
+        }
+        return next
+      },
+      { replace: true },
+    )
+  }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -92,12 +109,12 @@ export default function Transactions() {
               <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="입금자명 검색"
+                onChange={(e) => updateParam("q", e.target.value)}
+                placeholder="입금자명 검색…"
                 className="w-52 pl-8"
               />
             </div>
-            <Select value={bank} onValueChange={setBank}>
+            <Select value={bank} onValueChange={(v) => updateParam("bank", v)}>
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="전체 은행" />
               </SelectTrigger>

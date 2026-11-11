@@ -109,8 +109,8 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-5">
-        <Card className="lg:col-span-3">
+      <div className="grid gap-6 xl:grid-cols-5">
+        <Card className="xl:col-span-3">
           <CardHeader>
             <CardTitle>일별 입금액</CardTitle>
             <CardDescription>최근 7일동안 감지된 입금액 합계</CardDescription>
@@ -154,10 +154,9 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2">
+        <Card className="xl:col-span-2">
           <CardHeader>
             <CardTitle>최근 입금 내역</CardTitle>
-            <CardDescription>실시간으로 감지된 입금</CardDescription>
             <CardAction className="flex items-center gap-2">
               <Badge variant="outline" className="gap-1.5 font-normal">
                 <span className="size-1.5 animate-pulse rounded-full bg-foreground" />

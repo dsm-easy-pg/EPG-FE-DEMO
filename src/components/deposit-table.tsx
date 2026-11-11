@@ -29,30 +29,32 @@ export function DepositTable({
   }
 
   return (
-    <Table>
+    <Table className="min-w-[520px]">
       <TableHeader>
         <TableRow>
-          {showId && <TableHead className="w-28">거래 ID</TableHead>}
-          <TableHead>입금자명</TableHead>
-          <TableHead className="text-right">입금액</TableHead>
-          <TableHead>은행</TableHead>
-          <TableHead className="text-right">입금 시각</TableHead>
+          {showId && <TableHead className="pl-6">거래 ID</TableHead>}
+          <TableHead className={showId ? "px-4" : "pl-6"}>입금자명</TableHead>
+          <TableHead className="px-4 text-right">입금액</TableHead>
+          <TableHead className="px-4">은행</TableHead>
+          <TableHead className="pr-6 text-right">입금 시각</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {deposits.map((d) => (
           <TableRow key={d.id}>
             {showId && (
-              <TableCell className="font-mono text-xs text-muted-foreground">
+              <TableCell className="py-3 pl-6 font-mono text-xs text-muted-foreground">
                 {d.id}
               </TableCell>
             )}
-            <TableCell className="font-mono">{d.depositor}</TableCell>
-            <TableCell className="text-right font-medium tabular-nums">
+            <TableCell className={showId ? "px-4 py-3" : "py-3 pl-6 font-mono"}>
+              {d.depositor}
+            </TableCell>
+            <TableCell className="px-4 py-3 text-right font-medium tabular-nums">
               {won(d.amount)}
             </TableCell>
-            <TableCell>{d.bank}</TableCell>
-            <TableCell className="text-right tabular-nums text-muted-foreground">
+            <TableCell className="px-4 py-3">{d.bank}</TableCell>
+            <TableCell className="py-3 pr-6 text-right tabular-nums text-muted-foreground">
               {time === "relative" ? timeAgo(d.at) : formatDateTime(d.at)}
             </TableCell>
           </TableRow>
