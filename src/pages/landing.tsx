@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { AuthModal, type AuthMode } from "@/components/auth-modal"
 import { Brand } from "@/components/brand"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { startSimulator, useDeposits } from "@/lib/deposits"
 import { timeAgo, won } from "@/lib/format"
 
 const STEPS = [
@@ -17,19 +16,23 @@ const STEPS = [
       "발급 모달에 표시된 QR 코드를 Android 앱에서 스캔하면 폰이 계정에 연결됩니다.",
   },
   {
-    title: "웹훅 수신",
+    title: "입금 확인",
     description:
-      "폰이 입금 알림을 감지할 때마다 등록한 URL로 이벤트가 전달됩니다.",
+      "API 키로 입금 내역과 확인 여부를 조회해 결제를 검증합니다.",
   },
+]
+
+const FEED_SAMPLE = [
+  { name: "hxqkdp", amount: 12000, at: Date.now() - 2 * 60 * 1000 },
+  { name: "mvrtsa", amount: 50000, at: Date.now() - 9 * 60 * 1000 },
+  { name: "plkwbz", amount: 10000, at: Date.now() - 24 * 60 * 1000 },
+  { name: "qndjfl", amount: 30000, at: Date.now() - 47 * 60 * 1000 },
+  { name: "tksmwp", amount: 5000, at: Date.now() - 88 * 60 * 1000 },
+  { name: "vbnxcz", amount: 100000, at: Date.now() - 130 * 60 * 1000 },
 ]
 
 export default function Landing() {
   const [authMode, setAuthMode] = useState<AuthMode | null>(null)
-  const deposits = useDeposits()
-
-  useEffect(() => {
-    startSimulator()
-  }, [])
 
   return (
     <div className="min-h-svh bg-background">
@@ -76,19 +79,20 @@ export default function Landing() {
             <div className="rounded-xl border bg-background">
               <div className="flex items-center justify-between border-b px-4 py-3">
                 <span className="text-sm font-medium">입금 피드</span>
-                <Badge variant="outline" className="gap-1.5 font-normal">
-                  <span className="size-1.5 animate-pulse rounded-full bg-foreground" />
-                  실시간
+                <Badge variant="outline" className="font-normal">
+                  예시
                 </Badge>
               </div>
               <ul className="divide-y">
-                {deposits.slice(0, 6).map((d) => (
+                {FEED_SAMPLE.map((d) => (
                   <li
-                    key={d.id}
+                    key={d.name}
                     className="feed-row flex items-center gap-4 px-4 py-3 text-sm"
                   >
-                    <span className="w-16 shrink-0 font-mono">{d.depositor}</span>
-                    <span className="flex-1 text-muted-foreground">{d.bank}</span>
+                    <span className="w-16 shrink-0 font-mono">{d.name}</span>
+                    <span className="flex-1 text-muted-foreground">
+                      입금 감지
+                    </span>
                     <span className="font-medium tabular-nums">
                       {won(d.amount)}
                     </span>
@@ -130,7 +134,7 @@ export default function Landing() {
       <section>
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-14 md:px-6">
           <p className="text-base font-medium">
-            가입하면 바로 키를 발급하고 웹훅을 테스트할 수 있습니다.
+            가입하면 바로 키를 발급하고 입금 확인 API를 테스트할 수 있습니다.
           </p>
           <Button size="lg" onClick={() => setAuthMode("signup")}>
             시작하기
@@ -141,7 +145,7 @@ export default function Landing() {
       <footer className="border-t">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground md:px-6">
           <span>EASY-PG</span>
-          <span>휴대폰 입금 알림 기반 결제 알림 API</span>
+          <span>휴대폰 입금 알림 기반 결제 확인 API</span>
         </div>
       </footer>
 

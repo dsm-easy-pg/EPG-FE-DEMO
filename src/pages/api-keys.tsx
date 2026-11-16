@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Copy, Plus, Trash2, TriangleAlert } from "lucide-react"
 import QRCode from "react-qr-code"
 import { toast } from "sonner"
@@ -47,54 +47,72 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { errorMessage } from "@/lib/api"
 import {
+  createKey,
+  deleteKey,
+  EXP_DAY_OPTIONS,
+  getKeys,
   isExpired,
-  issueKey,
-  loadKeys,
-  saveKeys,
   type ApiKey,
+  type CreatedApiKey,
+  type ExpDay,
 } from "@/lib/api-keys"
-import { formatDate } from "@/lib/format"
-
-const VALIDITY_OPTIONS = [
-  { value: "30", label: "30일" },
-  { value: "90", label: "90일" },
-  { value: "180", label: "180일" },
-  { value: "365", label: "1년" },
-  { value: "730", label: "2년" },
-]
+import { formatDateValue } from "@/lib/format"
 
 export default function ApiKeys() {
-  const [keys, setKeys] = useState<ApiKey[]>(loadKeys)
+  const [keys, setKeys] = useState<ApiKey[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [issueOpen, setIssueOpen] = useState(false)
   const [name, setName] = useState("")
-  const [days, setDays] = useState("90")
-  const [issued, setIssued] = useState<{ key: ApiKey; secret: string } | null>(
-    null,
-  )
+  const [expDay, setExpDay] = useState<ExpDay>("DAY_90")
+  const [issuing, setIssuing] = useState(false)
+  const [issued, setIssued] = useState<CreatedApiKey | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<ApiKey | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
-  const persist = (next: ApiKey[]) => {
-    saveKeys(next)
-    setKeys(next)
+  const refresh = async () => {
+    try {
+      const next = await getKeys()
+      setKeys(next)
+      setError(null)
+    } catch (err) {
+      setError(errorMessage(err))
+    } finally {
+      setLoading(false)
+    }
   }
 
+  useEffect(() => {
+    refresh()
+  }, [])
+
   const handleIssueOpenChange = (open: boolean) => {
+    if (issuing) return
     setIssueOpen(open)
     if (!open) {
       setIssued(null)
       setName("")
-      setDays("90")
+      setExpDay("DAY_90")
     }
   }
 
-  const handleIssue = () => {
+  const handleIssue = async () => {
     const trimmed = name.trim()
-    if (!trimmed) return
-    const result = issueKey(trimmed, Number(days))
-    persist([result.key, ...keys])
-    setIssued(result)
-    toast.success("API 키를 발급했습니다")
+    if (!trimmed || issuing) return
+
+    setIssuing(true)
+    try {
+      const created = await createKey(trimmed, expDay)
+      setIssued(created)
+      toast.success("API 키를 발급했습니다")
+      await refresh()
+    } catch (err) {
+      toast.error(errorMessage(err))
+    } finally {
+      setIssuing(false)
+    }
   }
 
   const copySecret = async (secret: string) => {
@@ -106,11 +124,20 @@ export default function ApiKeys() {
     }
   }
 
-  const handleDelete = () => {
-    if (!deleteTarget) return
-    persist(keys.filter((k) => k.id !== deleteTarget.id))
-    toast("API 키를 삭제했습니다")
-    setDeleteTarget(null)
+  const handleDelete = async () => {
+    if (!deleteTarget || deleting) return
+
+    setDeleting(true)
+    try {
+      await deleteKey(deleteTarget.id)
+      setKeys((prev) => prev.filter((key) => key.id !== deleteTarget.id))
+      toast("API 키를 삭제했습니다")
+      setDeleteTarget(null)
+    } catch (err) {
+      toast.error(errorMessage(err))
+    } finally {
+      setDeleting(false)
+    }
   }
 
   return (
@@ -130,6 +157,14 @@ export default function ApiKeys() {
         </Button>
       </div>
 
+      {error && (
+        <Alert variant="destructive">
+          <TriangleAlert />
+          <AlertTitle>API 키를 불러오지 못했습니다</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       <div className="grid items-start gap-6">
         <Card>
           <CardHeader>
@@ -137,12 +172,16 @@ export default function ApiKeys() {
             <CardDescription>총 {keys.length}개</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 px-0">
-            {keys.length > 0 ? (
+            {loading ? (
+              <div className="px-6 py-12 text-center text-sm text-muted-foreground">
+                API 키를 불러오는 중…
+              </div>
+            ) : keys.length > 0 ? (
               <Table className="min-w-[560px]">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="pl-6">이름</TableHead>
-                    <TableHead className="px-4">API 키</TableHead>
+                    <TableHead className="px-4">ID</TableHead>
                     <TableHead className="px-4">만료일</TableHead>
                     <TableHead className="px-4">상태</TableHead>
                     <TableHead className="w-12 pr-6" />
@@ -157,7 +196,7 @@ export default function ApiKeys() {
                           {key.name}
                         </TableCell>
                         <TableCell className="px-4 py-3 font-mono text-xs text-muted-foreground">
-                          {key.maskedKey}
+                          #{key.id}
                         </TableCell>
                         <TableCell
                           className={
@@ -166,7 +205,7 @@ export default function ApiKeys() {
                               : "px-4 py-3 tabular-nums"
                           }
                         >
-                          {formatDate(key.expiresAt)}
+                          {formatDateValue(key.expDate)}
                         </TableCell>
                         <TableCell className="px-4 py-3">
                           {expired ? (
@@ -219,18 +258,21 @@ export default function ApiKeys() {
                   <Input
                     id="keyName"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(event) => setName(event.target.value)}
                     placeholder="예: 커머스 프로젝트"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="validity">유효기간</Label>
-                  <Select value={days} onValueChange={setDays}>
+                  <Select
+                    value={expDay}
+                    onValueChange={(value) => setExpDay(value as ExpDay)}
+                  >
                     <SelectTrigger id="validity" className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {VALIDITY_OPTIONS.map((option) => (
+                      {EXP_DAY_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
@@ -243,11 +285,15 @@ export default function ApiKeys() {
                 <Button
                   variant="outline"
                   onClick={() => handleIssueOpenChange(false)}
+                  disabled={issuing}
                 >
                   취소
                 </Button>
-                <Button onClick={handleIssue} disabled={!name.trim()}>
-                  발급
+                <Button
+                  onClick={handleIssue}
+                  disabled={!name.trim() || issuing}
+                >
+                  {issuing ? "발급 중…" : "발급"}
                 </Button>
               </DialogFooter>
             </>
@@ -261,19 +307,19 @@ export default function ApiKeys() {
               </DialogHeader>
               <div className="flex justify-center">
                 <div className="rounded-lg border bg-white p-3">
-                  <QRCode value={issued.secret} size={168} />
+                  <QRCode value={issued.key} size={168} />
                 </div>
               </div>
               <div className="space-y-1.5">
                 <Label>API 키</Label>
                 <div className="flex items-center gap-2">
                   <code className="flex-1 break-all rounded-md bg-muted px-3 py-2 font-mono text-xs">
-                    {issued.secret}
+                    {issued.key}
                   </code>
                   <Button
                     variant="outline"
                     size="icon-sm"
-                    onClick={() => copySecret(issued.secret)}
+                    onClick={() => copySecret(issued.key)}
                     aria-label="API 키 복사"
                   >
                     <Copy className="size-4" />
@@ -301,21 +347,25 @@ export default function ApiKeys() {
       <AlertDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null)
+          if (!open && !deleting) setDeleteTarget(null)
         }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>API 키를 삭제할까요?</AlertDialogTitle>
             <AlertDialogDescription>
-              {deleteTarget?.name} 키가 삭제되면 이 키로 연결된 기기와 웹훅
-              전달이 즉시 중단됩니다.
+              {deleteTarget?.name} 키가 삭제되면 이 키로 연결된 기기와 API 요청이
+              즉시 중단됩니다.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleDelete}>
-              삭제
+            <AlertDialogCancel disabled={deleting}>취소</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting ? "삭제 중…" : "삭제"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

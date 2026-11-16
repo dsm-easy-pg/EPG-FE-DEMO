@@ -34,35 +34,36 @@ function AuthForm({
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault()
+    if (submitting) return
     setError(null)
 
-    if (mode === "login") {
-      const result = login(username, password)
-      if (!result.ok) {
-        setError(result.error)
-        return
-      }
-      toast.success("로그인되었습니다")
-      onClose()
-      navigate("/app")
-      return
-    }
-
-    if (password !== confirm) {
+    if (mode === "signup" && password !== confirm) {
       setError("비밀번호가 일치하지 않습니다.")
       return
     }
-    const result = signup(username, password)
+
+    setSubmitting(true)
+    const result =
+      mode === "login"
+        ? await login(username, password)
+        : await signup(username, password)
+
     if (!result.ok) {
       setError(result.error)
+      setSubmitting(false)
       return
     }
-    toast.success("회원가입이 완료되었습니다")
+
+    toast.success(
+      mode === "signup" ? "회원가입이 완료되었습니다" : "로그인되었습니다",
+    )
     onClose()
     navigate("/app")
+    setSubmitting(false)
   }
 
   return (
@@ -78,7 +79,8 @@ function AuthForm({
             autoComplete="username"
             spellCheck={false}
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(event) => setUsername(event.target.value)}
+            disabled={submitting}
             required
           />
         </div>
@@ -89,7 +91,8 @@ function AuthForm({
             type="password"
             autoComplete={mode === "signup" ? "new-password" : "current-password"}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
+            disabled={submitting}
             required
           />
         </div>
@@ -101,14 +104,19 @@ function AuthForm({
               type="password"
               autoComplete="new-password"
               value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
+              onChange={(event) => setConfirm(event.target.value)}
+              disabled={submitting}
               required
             />
           </div>
         )}
         {error && <p className="text-sm text-destructive">{error}</p>}
-        <Button type="submit" className="w-full">
-          {mode === "signup" ? "가입하기" : "로그인"}
+        <Button type="submit" className="w-full" disabled={submitting}>
+          {submitting
+            ? "처리 중…"
+            : mode === "signup"
+              ? "가입하기"
+              : "로그인"}
         </Button>
       </form>
       <div className="text-center text-sm text-muted-foreground">

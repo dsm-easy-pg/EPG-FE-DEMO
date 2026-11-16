@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom"
 import {
   ArrowDownLeft,
   KeyRound,
   LayoutDashboard,
   LogOut,
+  UserX,
 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "cn"
@@ -12,9 +13,18 @@ import { Brand } from "@/components/brand"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { getCurrentUser, logout } from "@/lib/auth"
-import { startSimulator, useDeposits } from "@/lib/deposits"
-import { won } from "@/lib/format"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { UNAUTHORIZED_EVENT, errorMessage } from "@/lib/api"
+import { getCurrentUser, logout, withdraw } from "@/lib/auth"
 
 const NAV_ITEMS = [
   { to: "/app", label: "대시보드", icon: LayoutDashboard, end: true },
@@ -24,31 +34,39 @@ const NAV_ITEMS = [
 
 export function AppShell() {
   const [user] = useState(() => getCurrentUser())
+  const [withdrawOpen, setWithdrawOpen] = useState(false)
+  const [withdrawing, setWithdrawing] = useState(false)
   const navigate = useNavigate()
-  const deposits = useDeposits()
-  const prevCount = useRef(deposits.length)
 
   useEffect(() => {
-    startSimulator()
-  }, [])
-
-  useEffect(() => {
-    if (deposits.length > prevCount.current) {
-      const latest = deposits[0]
-      toast("입금 알림이 감지되었습니다", {
-        description: `${latest.depositor} ${won(latest.amount)} (${latest.bank})`,
-      })
-    }
-    prevCount.current = deposits.length
-  }, [deposits])
+    const handleUnauthorized = () => navigate("/", { replace: true })
+    window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized)
+    return () =>
+      window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized)
+  }, [navigate])
 
   if (!user) {
     return <Navigate to="/" replace />
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     navigate("/")
+  }
+
+  const handleWithdraw = async () => {
+    if (withdrawing) return
+    setWithdrawing(true)
+    try {
+      await withdraw()
+      toast.success("회원 탈퇴가 완료되었습니다")
+      navigate("/")
+    } catch (error) {
+      toast.error(errorMessage(error))
+    } finally {
+      setWithdrawing(false)
+      setWithdrawOpen(false)
+    }
   }
 
   return (
@@ -98,6 +116,13 @@ export function AppShell() {
               <LogOut className="size-4" />
             </Button>
           </div>
+          <button
+            type="button"
+            onClick={() => setWithdrawOpen(true)}
+            className="mt-2 w-full text-left text-xs text-muted-foreground underline-offset-4 hover:text-destructive hover:underline"
+          >
+            회원 탈퇴
+          </button>
         </div>
       </aside>
 
@@ -126,6 +151,14 @@ export function AppShell() {
             <Button
               variant="ghost"
               size="icon-sm"
+              onClick={() => setWithdrawOpen(true)}
+              aria-label="회원 탈퇴"
+            >
+              <UserX className="size-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={handleLogout}
               aria-label="로그아웃"
             >
@@ -137,6 +170,28 @@ export function AppShell() {
           <Outlet />
         </main>
       </div>
+
+      <AlertDialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>회원 탈퇴를 진행할까요?</AlertDialogTitle>
+            <AlertDialogDescription>
+              계정과 발급한 API 키, 입금 내역이 더 이상 조회되지 않습니다. 이
+              작업은 되돌릴 수 없습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={withdrawing}>취소</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={handleWithdraw}
+              disabled={withdrawing}
+            >
+              {withdrawing ? "처리 중…" : "탈퇴"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

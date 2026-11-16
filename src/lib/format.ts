@@ -9,6 +9,11 @@ export function formatDate(ts: number) {
   return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`
 }
 
+export function formatDateValue(value: string) {
+  const [year, month, day] = value.split("-")
+  return year && month && day ? `${year}.${month}.${day}` : value
+}
+
 export function formatDateTime(ts: number) {
   const d = new Date(ts)
   return `${formatDate(ts)} ${pad(d.getHours())}:${pad(d.getMinutes())}`
