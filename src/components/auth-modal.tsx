@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -69,9 +70,17 @@ function AuthForm({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>{mode === "signup" ? "회원가입" : "로그인"}</DialogTitle>
+        <p className="eyebrow">EASY-PG ACCOUNT</p>
+        <DialogTitle className="mt-1 text-[28px] leading-[1.08] font-medium tracking-[-0.045em]">
+          {mode === "signup" ? "계정을 만들어 시작하세요." : "다시 만나서 반가워요."}
+        </DialogTitle>
+        <DialogDescription>
+          {mode === "signup"
+            ? "API 키를 발급하고 Android 앱을 연결하면 바로 입금 확인을 테스트할 수 있습니다."
+            : "로그인하고 입금 현황과 API 키를 관리하세요."}
+        </DialogDescription>
       </DialogHeader>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-2">
           <Label htmlFor="auth-username">아이디</Label>
           <Input
@@ -110,8 +119,17 @@ function AuthForm({
             />
           </div>
         )}
-        {error && <p className="text-sm text-destructive">{error}</p>}
-        <Button type="submit" className="w-full" disabled={submitting}>
+        {error && (
+          <p className="rounded-2xl bg-destructive/8 px-3.5 py-2.5 text-[13px] text-destructive">
+            {error}
+          </p>
+        )}
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full"
+          disabled={submitting}
+        >
           {submitting
             ? "처리 중…"
             : mode === "signup"
@@ -119,7 +137,7 @@ function AuthForm({
               : "로그인"}
         </Button>
       </form>
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="rounded-2xl bg-background px-4 py-3 text-center text-[13px] text-muted-foreground">
         {mode === "signup" ? (
           <>
             이미 계정이 있나요?{" "}

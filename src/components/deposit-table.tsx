@@ -51,15 +51,22 @@ export function DepositTable({
                 {d.uuid}
               </TableCell>
             )}
-            <TableCell className={showId ? "px-4 py-3 font-mono" : "py-3 pl-6 font-mono"}>
-              {d.name}
+            <TableCell
+              className={showId ? "px-4 py-3" : "py-3 pl-6"}
+            >
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-7 place-items-center rounded-full bg-secondary font-mono text-[10px] font-semibold text-muted-foreground">
+                  {d.name.slice(0, 1)}
+                </span>
+                <span className="font-mono">{d.name}</span>
+              </div>
             </TableCell>
             <TableCell className="px-4 py-3 text-right font-medium tabular-nums">
               {won(d.amount)}
             </TableCell>
             <TableCell className="px-4 py-3">
               {d.checked ? (
-                <Badge variant="secondary">확인</Badge>
+                <Badge variant="success">확인</Badge>
               ) : (
                 <Badge variant="outline">대기</Badge>
               )}

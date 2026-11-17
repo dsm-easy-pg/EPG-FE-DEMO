@@ -149,10 +149,11 @@ export default function ApiKeys() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="font-heading text-2xl font-semibold tracking-tight">
+          <p className="eyebrow">API KEYS</p>
+          <h1 className="mt-3 text-[30px] leading-tight font-semibold tracking-[-0.045em] md:text-[34px]">
             API 키
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1.5 max-w-[560px] text-sm text-muted-foreground">
             Android 앱과 서버를 연결하는 키입니다. 원문은 발급할 때 한 번만
             보입니다.
           </p>
@@ -225,7 +226,7 @@ export default function ApiKeys() {
                           {expired ? (
                             <Badge variant="destructive">만료</Badge>
                           ) : (
-                            <Badge variant="secondary">활성</Badge>
+                            <Badge variant="success">활성</Badge>
                           )}
                         </TableCell>
                         <TableCell className="py-3 pr-6">
@@ -321,7 +322,7 @@ export default function ApiKeys() {
               </DialogHeader>
               <div className="space-y-2">
                 <div className="flex justify-center">
-                  <div className="rounded-lg border bg-white p-3">
+                  <div className="rounded-2xl bg-white p-4 ring-1 ring-border/80">
                     <QRCode value={issued.key} size={168} />
                   </div>
                 </div>
@@ -340,7 +341,7 @@ export default function ApiKeys() {
               <div className="space-y-1.5">
                 <Label>API 키</Label>
                 <div className="flex items-center gap-2">
-                  <code className="flex-1 break-all rounded-md bg-muted px-3 py-2 font-mono text-xs">
+                  <code className="flex-1 break-all rounded-2xl bg-background px-3.5 py-2.5 font-mono text-xs ring-1 ring-border/60">
                     {issued.key}
                   </code>
                   <Button

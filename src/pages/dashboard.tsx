@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { ChevronLeft, ChevronRight, TriangleAlert } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
-import { DepositTable } from "@/components/deposit-table"
+import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,7 +20,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { errorMessage } from "@/lib/api"
-import { won } from "@/lib/format"
+import { timeAgo, won } from "@/lib/format"
 import {
   dateParamLabel,
   daysAgoParam,
@@ -32,7 +32,7 @@ import {
 } from "@/lib/remittances"
 
 const chartConfig = {
-  total: { label: "입금액", color: "var(--foreground)" },
+  total: { label: "입금액", color: "var(--primary)" },
 } satisfies ChartConfig
 
 interface DashboardState {
@@ -153,13 +153,20 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-[-0.03em]">
-          입금 현황
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          알림으로 접수된 입금을 15초마다 새로 불러옵니다.
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="eyebrow">DASHBOARD</p>
+          <h1 className="mt-3 text-[30px] leading-tight font-semibold tracking-[-0.045em] md:text-[34px]">
+            입금 현황
+          </h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            알림으로 접수된 입금을 15초마다 새로 불러옵니다.
+          </p>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-[11px] font-medium text-muted-foreground ring-1 ring-border/80">
+          <span className="size-1.5 rounded-full bg-success" />
+          15초마다 갱신
+        </span>
       </div>
 
       {state.error && (
@@ -170,44 +177,46 @@ export default function Dashboard() {
         </Alert>
       )}
 
-      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-border ring-1 ring-border lg:grid-cols-4">
-        <div className="bg-card p-5">
-          <p className="text-xs text-muted-foreground">누적 입금액</p>
-          <p className="mt-2 font-mono text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="rounded-3xl bg-primary p-5 text-primary-foreground">
+          <p className="text-xs text-primary-foreground/65">누적 입금액</p>
+          <p className="mt-3 text-[22px] font-semibold tracking-[-0.04em] tabular-nums md:text-[26px]">
             {state.loading ? "…" : won(state.totalAmount)}
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">전체 기간</p>
+          <p className="mt-1 text-[11px] text-primary-foreground/55">
+            전체 기간
+          </p>
         </div>
-        <div className="bg-card p-5">
+        <div className="rounded-3xl bg-card p-5 ring-1 ring-border/80">
           <p className="text-xs text-muted-foreground">누적 건수</p>
-          <p className="mt-2 font-mono text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+          <p className="mt-3 text-[22px] font-semibold tracking-[-0.04em] tabular-nums md:text-[26px]">
             {state.loading
               ? "…"
               : `${state.totalCount.toLocaleString("ko-KR")}건`}
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">전체 기간</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">전체 기간</p>
         </div>
-        <div className="bg-card p-5">
+        <div className="rounded-3xl bg-card p-5 ring-1 ring-border/80">
           <p className="text-xs text-muted-foreground">확인 대기</p>
-          <p className="mt-2 font-mono text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+          <p className="mt-3 text-[22px] font-semibold tracking-[-0.04em] tabular-nums md:text-[26px]">
             {state.loading ? "…" : won(state.pendingAmount)}
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-[11px] text-muted-foreground">
             {state.loading
               ? "집계 중"
               : `${state.pendingCount.toLocaleString("ko-KR")}건`}
           </p>
         </div>
-        <div className="bg-card p-5">
+        <div className="rounded-3xl bg-card p-5 ring-1 ring-border/80">
           <p className="text-xs text-muted-foreground">건당 평균</p>
-          <p className="mt-2 font-mono text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+          <p className="mt-3 text-[22px] font-semibold tracking-[-0.04em] tabular-nums md:text-[26px]">
             {state.loading ? "…" : won(average)}
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">누적 기준</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">누적 기준</p>
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-5">
+      <div className="grid gap-4 xl:grid-cols-5">
         <Card className="xl:col-span-3">
           <CardHeader>
             <CardTitle>일별 입금액</CardTitle>
@@ -239,7 +248,7 @@ export default function Dashboard() {
           <CardContent>
             <ChartContainer config={chartConfig} className="aspect-auto h-56 w-full">
               <BarChart data={state.daily} margin={{ top: 8, bottom: 0 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis
                   dataKey="date"
                   tickLine={false}
@@ -267,7 +276,7 @@ export default function Dashboard() {
                 <Bar
                   dataKey="total"
                   fill="var(--color-total)"
-                  radius={[2, 2, 0, 0]}
+                  radius={[6, 6, 0, 0]}
                   maxBarSize={40}
                 />
               </BarChart>
@@ -290,8 +299,40 @@ export default function Dashboard() {
               <div className="px-6 py-12 text-center text-sm text-muted-foreground">
                 입금 내역을 불러오는 중입니다.
               </div>
+            ) : recentRows.length === 0 ? (
+              <div className="px-6 py-12 text-center text-sm text-muted-foreground">
+                최근 입금이 없습니다.
+              </div>
             ) : (
-              <DepositTable deposits={recentRows} time="relative" />
+              <div className="divide-y divide-border/70 px-6">
+                {recentRows.map((deposit) => (
+                  <div
+                    key={deposit.uuid}
+                    className="flex items-center gap-3 py-3.5"
+                  >
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-secondary font-mono text-[11px] font-semibold text-muted-foreground">
+                      {deposit.name.slice(0, 1)}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-mono text-[13px] font-medium">
+                        {deposit.name}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {deposit.at === null ? "시각 없음" : timeAgo(deposit.at)}
+                      </p>
+                    </div>
+                    <span className="font-mono text-[13px] font-medium tabular-nums">
+                      {won(deposit.amount)}
+                    </span>
+                    <Badge
+                      variant={deposit.checked ? "success" : "outline"}
+                      className="h-5 px-2 text-[10px]"
+                    >
+                      {deposit.checked ? "확인" : "대기"}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
             )}
           </CardContent>
         </Card>

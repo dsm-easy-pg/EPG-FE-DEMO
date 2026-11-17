@@ -13,7 +13,6 @@ import { cn } from "cn"
 import { Brand } from "@/components/brand"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -73,23 +72,23 @@ export function AppShell() {
 
   return (
     <div className="min-h-svh bg-background">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r bg-background md:flex">
-        <div className="flex h-14 items-center border-b px-5">
+      <aside className="fixed inset-y-4 left-4 z-40 hidden w-60 flex-col rounded-[28px] bg-card p-3 ring-1 ring-border/80 md:flex">
+        <div className="flex h-14 items-center px-3">
           <NavLink to="/app">
             <Brand />
           </NavLink>
         </div>
-        <nav className="flex flex-col gap-1 p-3">
+        <nav className="mt-2 flex flex-col gap-1">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.end}
               className={({ isActive }) =>
-                 cn(
-                   "flex items-center gap-2.5 border-l-2 border-transparent px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
-                   isActive && "border-foreground bg-muted text-foreground",
-                 )
+                cn(
+                  "flex h-10 items-center gap-2.5 rounded-full px-3.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                  isActive && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
+                )
               }
             >
               <item.icon className="size-4" />
@@ -97,55 +96,88 @@ export function AppShell() {
             </NavLink>
           ))}
         </nav>
-        <div className="mt-auto p-3">
+        <div className="mt-auto space-y-3">
           <a
             href={ANDROID_RELEASE_URL}
             target="_blank"
             rel="noreferrer"
-            className="mb-3 flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="flex items-center gap-2.5 rounded-full bg-background px-3.5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             <Download className="size-4" />
             <span className="flex-1">Android 앱</span>
-            <span className="font-mono text-xs">
+            <span className="font-mono text-[10px]">
               {ANDROID_RELEASE_VERSION}
             </span>
           </a>
-          <Separator className="mb-3" />
-          <div className="flex items-center gap-2 pb-1">
-            <Avatar className="size-8">
-              <AvatarFallback className="text-xs font-medium">
-                {user.username.slice(0, 2).toLowerCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-medium">{user.username}</div>
-              <div className="text-xs text-muted-foreground">계정</div>
+          <div className="rounded-2xl bg-background p-3">
+            <div className="flex items-center gap-2.5">
+              <Avatar className="size-8">
+                <AvatarFallback className="bg-primary/10 text-[11px] font-semibold text-primary">
+                  {user.username.slice(0, 2).toLowerCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-sm font-medium">
+                  {user.username}
+                </div>
+                <div className="text-[11px] text-muted-foreground">계정</div>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={handleLogout}
+                aria-label="로그아웃"
+              >
+                <LogOut className="size-4" />
+              </Button>
             </div>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={handleLogout}
-              aria-label="로그아웃"
+            <button
+              type="button"
+              onClick={() => setWithdrawOpen(true)}
+              className="mt-2 w-full text-left text-[11px] text-muted-foreground underline-offset-4 hover:text-destructive hover:underline"
             >
-              <LogOut className="size-4" />
-            </Button>
+              회원 탈퇴
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => setWithdrawOpen(true)}
-            className="mt-2 w-full text-left text-xs text-muted-foreground underline-offset-4 hover:text-destructive hover:underline"
-          >
-            회원 탈퇴
-          </button>
         </div>
       </aside>
 
-      <div className="md:pl-60">
-        <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background px-4 md:hidden">
-          <NavLink to="/app">
-            <Brand />
-          </NavLink>
-          <nav className="ml-auto flex items-center gap-1">
+      <div className="md:pl-[272px]">
+        <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur md:hidden">
+          <div className="flex h-14 items-center gap-2 px-4">
+            <NavLink to="/app">
+              <Brand />
+            </NavLink>
+            <div className="ml-auto flex items-center gap-0.5">
+              <Button variant="ghost" size="icon-sm" asChild>
+                <a
+                  href={ANDROID_RELEASE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Android 앱 다운로드"
+                >
+                  <Download className="size-4" />
+                </a>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => setWithdrawOpen(true)}
+                aria-label="회원 탈퇴"
+              >
+                <UserX className="size-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={handleLogout}
+                aria-label="로그아웃"
+              >
+                <LogOut className="size-4" />
+              </Button>
+            </div>
+          </div>
+          <nav className="flex items-center gap-1 overflow-x-auto px-4 pb-3">
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.to}
@@ -153,44 +185,18 @@ export function AppShell() {
                 end={item.end}
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground",
-                    isActive && "bg-muted text-foreground",
+                    "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium text-muted-foreground",
+                    isActive && "bg-primary text-primary-foreground",
                   )
                 }
               >
-                <item.icon className="size-4" />
-                <span className="hidden sm:inline">{item.label}</span>
+                <item.icon className="size-3.5" />
+                {item.label}
               </NavLink>
             ))}
-            <Button variant="ghost" size="icon-sm" asChild>
-              <a
-                href={ANDROID_RELEASE_URL}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Android 앱 다운로드"
-              >
-                <Download className="size-4" />
-              </a>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => setWithdrawOpen(true)}
-              aria-label="회원 탈퇴"
-            >
-              <UserX className="size-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={handleLogout}
-              aria-label="로그아웃"
-            >
-              <LogOut className="size-4" />
-            </Button>
           </nav>
         </header>
-        <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8">
+        <main className="mx-auto w-full max-w-[1120px] px-4 py-6 md:px-8 md:py-10">
           <Outlet />
         </main>
       </div>

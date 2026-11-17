@@ -5,14 +5,11 @@ import {
   Check,
   Copy,
   Download,
-  KeyRound,
-  ShieldCheck,
   Terminal,
 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "cn"
-import { Brand } from "@/components/brand"
-import { Badge } from "@/components/ui/badge"
+import { SiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -123,10 +120,10 @@ function Method({ method }: { method: "GET" | "POST" }) {
   return (
     <span
       className={cn(
-        "inline-flex h-5 items-center rounded px-1.5 font-mono text-[11px] font-semibold",
+        "inline-flex h-6 items-center rounded-full px-2.5 font-mono text-[10px] font-semibold",
         method === "GET"
-          ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-          : "bg-sky-500/10 text-sky-700 dark:text-sky-400",
+          ? "bg-success/10 text-success"
+          : "bg-primary/10 text-primary",
       )}
     >
       {method}
@@ -155,9 +152,9 @@ function CodeBlock({
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-muted/40">
-      <div className="flex items-center justify-between border-b px-3 py-1.5">
-        <span className="font-mono text-[11px] text-muted-foreground">
+    <div className="overflow-hidden rounded-3xl bg-[#15161b] text-white ring-1 ring-white/5">
+      <div className="flex items-center justify-between border-b border-white/8 px-4 py-2.5">
+        <span className="font-mono text-[10px] text-white/40">
           {language}
         </span>
         <Button
@@ -165,11 +162,12 @@ function CodeBlock({
           size="icon-xs"
           onClick={copy}
           aria-label="코드 복사"
+          className="text-white/50 hover:bg-white/10 hover:text-white"
         >
           {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
         </Button>
       </div>
-      <pre className="overflow-x-auto p-4 text-xs leading-relaxed">
+      <pre className="overflow-x-auto px-4 py-4 font-mono text-[11px] leading-6 text-white/65">
         <code>{code}</code>
       </pre>
     </div>
@@ -188,13 +186,13 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <section id={id} className="scroll-mt-24 space-y-4">
+    <section id={id} className="scroll-mt-28 space-y-5">
       <div>
-        <h2 className="font-heading text-2xl font-semibold tracking-tight">
+        <h2 className="font-heading text-[30px] leading-tight font-semibold tracking-[-0.04em] md:text-[34px]">
           {title}
         </h2>
         {description && (
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-2.5 max-w-[640px] text-[15px] leading-7 text-muted-foreground">
             {description}
           </p>
         )}
@@ -214,8 +212,8 @@ function Endpoint({
   children: React.ReactNode
 }) {
   return (
-    <div className="space-y-4 rounded-xl border bg-card p-5">
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-muted/40 px-3 py-2.5">
+    <div className="space-y-4 rounded-3xl bg-card p-5 ring-1 ring-border/80">
+      <div className="flex flex-wrap items-center gap-2 rounded-3xl bg-background px-3.5 py-3 ring-1 ring-border/60">
         <Method method={method} />
         <code className="break-all font-mono text-sm">{path}</code>
       </div>
@@ -226,7 +224,7 @@ function Endpoint({
 
 function SubHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-sm font-semibold tracking-tight">{children}</h3>
+    <h3 className="text-[15px] font-semibold tracking-[-0.02em]">{children}</h3>
   )
 }
 
@@ -236,7 +234,7 @@ function ParamTable({
   rows: [name: string, type: string, required: string, description: string][]
 }) {
   return (
-    <div className="overflow-hidden rounded-lg border">
+    <div className="overflow-hidden rounded-3xl bg-card ring-1 ring-border/80">
       <Table>
         <TableHeader>
           <TableRow>
@@ -271,78 +269,51 @@ function ParamTable({
 
 export default function Docs() {
   return (
-    <div className="min-h-svh bg-background">
-      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center px-4 md:px-6">
-          <Link to="/">
-            <Brand />
-          </Link>
-          <span className="ml-3 hidden text-sm text-muted-foreground sm:inline">
-            API 문서
-          </span>
-          <div className="ml-auto flex items-center gap-1.5">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/">홈</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <a
-                href={ANDROID_RELEASE_URL}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Download className="size-3.5" />
-                앱 설치
-              </a>
-            </Button>
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/app/keys">
-                <KeyRound className="size-3.5" />
-                API 키
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="relative min-h-svh bg-background">
+      <div className="hero-aura pointer-events-none absolute inset-x-0 top-0 h-[460px]" />
+      <SiteHeader variant="docs" />
 
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:px-6 lg:grid-cols-[200px_minmax(0,1fr)] lg:py-14">
+      <div className="relative mx-auto grid max-w-[1200px] gap-10 px-5 py-12 md:py-16 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-14">
         <aside className="hidden lg:block">
-          <nav className="sticky top-24 space-y-1">
-            <p className="px-2 pb-2 text-xs font-medium text-muted-foreground">
-              목차
+          <nav
+            className="sticky top-28 rounded-3xl bg-card p-3 ring-1 ring-border/80"
+            aria-label="문서 목차"
+          >
+            <p className="px-3 py-2 font-mono text-[10px] font-medium tracking-[0.14em] text-muted-foreground">
+              CONTENTS
             </p>
-            {TOC.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className="block rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-              >
-                {item.label}
-              </a>
-            ))}
+            <div className="space-y-0.5">
+              {TOC.map((item) => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className="block rounded-full px-3 py-2 text-[13px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
           </nav>
         </aside>
 
-        <main className="min-w-0 space-y-14">
+        <main className="min-w-0 space-y-16">
           <section>
-            <Badge variant="outline" className="font-normal">
-              <ShieldCheck className="size-3.5" />
-              API Key 인증
-            </Badge>
-            <h1 className="mt-4 font-heading text-3xl font-semibold tracking-tight md:text-4xl">
+            <p className="eyebrow">DEVELOPER DOCS</p>
+            <h1 className="mt-4 text-[42px] leading-[1.03] font-medium tracking-[-0.05em] md:text-[56px]">
               EASY-PG API
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+            <p className="mt-5 max-w-[620px] text-[15px] leading-7 text-muted-foreground md:text-base md:leading-8">
               API 키로 접근할 수 있는 입금 확인 API 명세입니다. 세션 로그인이
               필요한 대시보드 내부 API는 공개하지 않습니다.
             </p>
-            <div className="mt-6 flex flex-wrap gap-2 text-xs">
-              <code className="rounded-md border bg-muted/50 px-2 py-1 font-mono">
+            <div className="mt-6 flex flex-wrap gap-2">
+              <code className="rounded-full bg-card px-3.5 py-2 font-mono text-[11px] ring-1 ring-border/80">
                 Base URL {BASE_URL}
               </code>
-              <code className="rounded-md border bg-muted/50 px-2 py-1 font-mono">
+              <code className="rounded-full bg-card px-3.5 py-2 font-mono text-[11px] ring-1 ring-border/80">
                 X-Api-Key
               </code>
-              <code className="rounded-md border bg-muted/50 px-2 py-1 font-mono">
+              <code className="rounded-full bg-card px-3.5 py-2 font-mono text-[11px] ring-1 ring-border/80">
                 application/json
               </code>
             </div>
@@ -364,7 +335,7 @@ export default function Docs() {
             title="개요"
             description="모든 엔드포인트는 JSON을 사용하며 /api/rem/v1 아래에 있습니다."
           >
-            <div className="space-y-4 rounded-xl border bg-card p-5">
+            <div className="space-y-4 rounded-3xl bg-card p-6 ring-1 ring-border/80">
               <div className="grid gap-3 text-sm sm:grid-cols-2">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">
@@ -410,7 +381,7 @@ export default function Docs() {
             title="Android 앱"
             description="휴대폰 입금 알림을 서버로 보내는 앱입니다. 키를 발급한 뒤 QR 코드로 기기를 연결합니다."
           >
-            <div className="space-y-5 rounded-xl border bg-card p-5">
+            <div className="space-y-5 rounded-3xl bg-card p-6 ring-1 ring-border/80">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="font-mono text-sm">
@@ -433,7 +404,7 @@ export default function Docs() {
               </div>
               <ol className="space-y-3 text-sm">
                 <li className="flex gap-3">
-                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
                     1
                   </span>
                   <span className="text-muted-foreground">
@@ -442,7 +413,7 @@ export default function Docs() {
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
                     2
                   </span>
                   <span className="text-muted-foreground">
@@ -450,7 +421,7 @@ export default function Docs() {
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
                     3
                   </span>
                   <span className="text-muted-foreground">
@@ -483,10 +454,10 @@ export default function Docs() {
             title="인증"
             description="모든 요청에 대시보드에서 발급한 API 키를 X-Api-Key 헤더로 전달합니다."
           >
-            <div className="space-y-4 rounded-xl border bg-card p-5">
+            <div className="space-y-4 rounded-3xl bg-card p-6 ring-1 ring-border/80">
               <ol className="space-y-3 text-sm">
                 <li className="flex gap-3">
-                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
                     1
                   </span>
                   <span className="text-muted-foreground">
@@ -495,7 +466,7 @@ export default function Docs() {
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
                     2
                   </span>
                   <span className="text-muted-foreground">
@@ -504,7 +475,7 @@ export default function Docs() {
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
                     3
                   </span>
                   <span className="text-muted-foreground">
@@ -536,7 +507,7 @@ export default function Docs() {
                 <CodeBlock code={RESPONSE_ERROR} language="json" />
               </div>
             </div>
-            <div className="space-y-3 rounded-xl border bg-card p-5">
+            <div className="space-y-3 rounded-3xl bg-card p-6 ring-1 ring-border/80">
               <ParamTable
                 rows={[
                   ["success", "boolean", "항상", "요청 성공 여부"],
@@ -774,7 +745,7 @@ export default function Docs() {
             title="오류 코드"
             description="HTTP 상태 코드와 error.code를 함께 확인하세요."
           >
-            <div className="overflow-hidden rounded-xl border">
+            <div className="overflow-hidden rounded-3xl bg-card ring-1 ring-border/80">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -810,7 +781,7 @@ export default function Docs() {
                 </TableBody>
               </Table>
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl bg-card p-6 ring-1 ring-border/80">
               <div className="flex items-start gap-3">
                 <BookOpen className="mt-0.5 size-4 text-muted-foreground" />
                 <div>
