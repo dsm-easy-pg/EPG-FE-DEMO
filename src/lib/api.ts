@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? ""
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "https://epg-core.dsmhs.kr"
 
 const TOKEN_KEY = "easypg.accessToken"
 const USERNAME_KEY = "easypg.username"

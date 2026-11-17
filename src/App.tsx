@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { AppShell } from "@/components/app-shell"
 import ApiKeys from "@/pages/api-keys"
 import Dashboard from "@/pages/dashboard"
+import Docs from "@/pages/docs"
 import Landing from "@/pages/landing"
 import Transactions from "@/pages/transactions"
 
@@ -11,6 +12,7 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/docs" element={<Docs />} />
         <Route path="/app" element={<AppShell />}>
           <Route index element={<Dashboard />} />
           <Route path="transactions" element={<Transactions />} />

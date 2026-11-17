@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { AuthModal, type AuthMode } from "@/components/auth-modal"
 import { Brand } from "@/components/brand"
 import { Badge } from "@/components/ui/badge"
@@ -46,6 +47,12 @@ export default function Landing() {
             >
               작동 방식
             </a>
+            <Link
+              to="/docs"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              API 문서
+            </Link>
           </nav>
           <div className="ml-auto flex items-center gap-2">
             <Button variant="ghost" onClick={() => setAuthMode("login")}>
@@ -145,7 +152,12 @@ export default function Landing() {
       <footer className="border-t">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground md:px-6">
           <span>EASY-PG</span>
-          <span>휴대폰 입금 알림 기반 결제 확인 API</span>
+          <div className="flex items-center gap-4">
+            <Link to="/docs" className="hover:text-foreground">
+              API 문서
+            </Link>
+            <span>휴대폰 입금 알림 기반 결제 확인 API</span>
+          </div>
         </div>
       </footer>
 

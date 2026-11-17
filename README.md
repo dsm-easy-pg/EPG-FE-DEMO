@@ -12,14 +12,14 @@ API 키를 관리합니다.
 
 ## 실행
 
-백엔드(`epg-be`)를 `http://localhost:8080`에서 실행한 뒤:
+백엔드(`epg-be`)를 `https://epg-core.dsmhs.kr`에서 실행한 뒤:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Vite 개발 서버는 `/api` 요청을 `http://localhost:8080`으로 프록시합니다.
+API 요청은 프록시 없이 `https://epg-core.dsmhs.kr`로 직접 전송됩니다.
 다른 주소를 사용하려면 `VITE_API_BASE_URL` 환경 변수를 설정하세요.
 
 ## 페이지 구성
@@ -30,6 +30,7 @@ Vite 개발 서버는 `/api` 요청을 `http://localhost:8080`으로 프록시�
 | `/app` | 대시보드 (입금 통계, 일별 입금액 차트, 최근 입금 내역) |
 | `/app/transactions` | 입금 내역 (기간/최소 금액/확인 상태 필터, 페이지네이션, CSV 내보내기) |
 | `/app/keys` | API 키 관리 (발급 + QR 코드, 만료 표시, 삭제) |
+| `/docs` | API 문서 (X-Api-Key로 접근 가능한 `/api/rem/v1` 명세) |
 
 ## 주요 스펙
 

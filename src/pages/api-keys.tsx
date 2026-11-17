@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react"
-import { Copy, Plus, Trash2, TriangleAlert } from "lucide-react"
+import { Link } from "react-router-dom"
+import {
+  BookOpen,
+  Copy,
+  Plus,
+  Trash2,
+  TriangleAlert,
+} from "lucide-react"
 import QRCode from "react-qr-code"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
@@ -151,10 +158,18 @@ export default function ApiKeys() {
             서비스와 Android 앱을 연결할 API 키를 관리합니다.
           </p>
         </div>
-        <Button onClick={() => setIssueOpen(true)}>
-          <Plus className="size-4" />
-          키 발급
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" asChild>
+            <Link to="/docs">
+              <BookOpen className="size-4" />
+              API 문서
+            </Link>
+          </Button>
+          <Button onClick={() => setIssueOpen(true)}>
+            <Plus className="size-4" />
+            키 발급
+          </Button>
+        </div>
       </div>
 
       {error && (
