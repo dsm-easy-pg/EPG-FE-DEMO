@@ -1,15 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
-import {
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  TriangleAlert,
-} from "lucide-react"
+import { ChevronLeft, ChevronRight, TriangleAlert } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { DepositTable } from "@/components/deposit-table"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -155,84 +149,71 @@ export default function Dashboard() {
   const recentRows = useMemo(() => sortByLatest(rows).slice(0, 6), [rows])
   const average =
     state.totalCount > 0 ? Math.round(state.totalAmount / state.totalCount) : 0
+  const weekTotal = state.daily.reduce((sum, day) => sum + day.total, 0)
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight">
-          대시보드
+        <h1 className="text-2xl font-semibold tracking-[-0.03em]">
+          입금 현황
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          휴대폰에서 감지된 입금 알림을 실시간으로 확인합니다.
+          알림으로 접수된 입금을 15초마다 새로 불러옵니다.
         </p>
       </div>
 
       {state.error && (
         <Alert variant="destructive">
           <TriangleAlert />
-          <AlertTitle>데이터를 불러오지 못했습니다</AlertTitle>
+          <AlertTitle>입금 현황을 불러오지 못했습니다</AlertTitle>
           <AlertDescription>{state.error}</AlertDescription>
         </Alert>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Card size="sm">
-          <CardHeader>
-            <CardDescription>총 입금액</CardDescription>
-            <CardTitle className="text-2xl tabular-nums tracking-tight">
-              {state.loading ? "—" : won(state.totalAmount)}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground">전체 누적</p>
-          </CardContent>
-        </Card>
-        <Card size="sm">
-          <CardHeader>
-            <CardDescription>입금 건수</CardDescription>
-            <CardTitle className="text-2xl tabular-nums tracking-tight">
-              {state.loading
-                ? "—"
-                : `${state.totalCount.toLocaleString("ko-KR")}건`}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground">전체 누적</p>
-          </CardContent>
-        </Card>
-        <Card size="sm">
-          <CardHeader>
-            <CardDescription>확인 대기</CardDescription>
-            <CardTitle className="text-2xl tabular-nums tracking-tight">
-              {state.loading ? "—" : won(state.pendingAmount)}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground">
-              {state.loading
-                ? "—"
-                : `${state.pendingCount.toLocaleString("ko-KR")}건`}
-            </p>
-          </CardContent>
-        </Card>
-        <Card size="sm">
-          <CardHeader>
-            <CardDescription>평균 입금액</CardDescription>
-            <CardTitle className="text-2xl tabular-nums tracking-tight">
-              {state.loading ? "—" : won(average)}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground">건당 평균</p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-border ring-1 ring-border lg:grid-cols-4">
+        <div className="bg-card p-5">
+          <p className="text-xs text-muted-foreground">누적 입금액</p>
+          <p className="mt-2 font-mono text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+            {state.loading ? "…" : won(state.totalAmount)}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">전체 기간</p>
+        </div>
+        <div className="bg-card p-5">
+          <p className="text-xs text-muted-foreground">누적 건수</p>
+          <p className="mt-2 font-mono text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+            {state.loading
+              ? "…"
+              : `${state.totalCount.toLocaleString("ko-KR")}건`}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">전체 기간</p>
+        </div>
+        <div className="bg-card p-5">
+          <p className="text-xs text-muted-foreground">확인 대기</p>
+          <p className="mt-2 font-mono text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+            {state.loading ? "…" : won(state.pendingAmount)}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {state.loading
+              ? "집계 중"
+              : `${state.pendingCount.toLocaleString("ko-KR")}건`}
+          </p>
+        </div>
+        <div className="bg-card p-5">
+          <p className="text-xs text-muted-foreground">건당 평균</p>
+          <p className="mt-2 font-mono text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+            {state.loading ? "…" : won(average)}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">누적 기준</p>
+        </div>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-5">
         <Card className="xl:col-span-3">
           <CardHeader>
-            <CardTitle>최근 7일 입금액</CardTitle>
-            <CardDescription>{rangeLabel} · 7일 합계</CardDescription>
+            <CardTitle>일별 입금액</CardTitle>
+            <CardDescription>
+              {rangeLabel} (7일 합계 {won(weekTotal)})
+            </CardDescription>
             <CardAction className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -286,7 +267,7 @@ export default function Dashboard() {
                 <Bar
                   dataKey="total"
                   fill="var(--color-total)"
-                  radius={[3, 3, 0, 0]}
+                  radius={[2, 2, 0, 0]}
                   maxBarSize={40}
                 />
               </BarChart>
@@ -296,24 +277,18 @@ export default function Dashboard() {
 
         <Card className="xl:col-span-2">
           <CardHeader>
-            <CardTitle>최근 입금 내역</CardTitle>
-            <CardAction className="flex items-center gap-2">
-              <Badge variant="outline" className="gap-1.5 font-normal">
-                <span className="size-1.5 animate-pulse rounded-full bg-foreground" />
-                실시간
-              </Badge>
+            <CardTitle>최근 입금</CardTitle>
+            <CardDescription>15초마다 자동 갱신</CardDescription>
+            <CardAction>
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/app/transactions">
-                  전체 보기
-                  <ArrowRight className="size-3.5" />
-                </Link>
+                <Link to="/app/transactions">전체 내역</Link>
               </Button>
             </CardAction>
           </CardHeader>
           <CardContent className="px-0">
             {state.loading && state.recent.length === 0 ? (
               <div className="px-6 py-12 text-center text-sm text-muted-foreground">
-                입금 내역을 불러오는 중…
+                입금 내역을 불러오는 중입니다.
               </div>
             ) : (
               <DepositTable deposits={recentRows} time="relative" />

@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import {
-  ArrowRight,
   BookOpen,
   Check,
   Copy,
+  Download,
   KeyRound,
   ShieldCheck,
   Terminal,
@@ -22,11 +22,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  ANDROID_RELEASE_URL,
+  ANDROID_RELEASE_VERSION,
+  API_BASE_URL,
+} from "@/lib/links"
 
-const BASE_URL = "https://epg-core.dsmhs.kr"
+const BASE_URL = API_BASE_URL
 
 const TOC = [
   { id: "overview", label: "개요" },
+  { id: "app-install", label: "Android 앱" },
   { id: "quickstart", label: "빠른 시작" },
   { id: "auth", label: "인증" },
   { id: "response", label: "공통 응답" },
@@ -151,7 +157,7 @@ function CodeBlock({
   return (
     <div className="overflow-hidden rounded-lg border bg-muted/40">
       <div className="flex items-center justify-between border-b px-3 py-1.5">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+        <span className="font-mono text-[11px] text-muted-foreground">
           {language}
         </span>
         <Button
@@ -278,6 +284,16 @@ export default function Docs() {
             <Button variant="ghost" size="sm" asChild>
               <Link to="/">홈</Link>
             </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <a
+                href={ANDROID_RELEASE_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Download className="size-3.5" />
+                앱 설치
+              </a>
+            </Button>
             <Button variant="outline" size="sm" asChild>
               <Link to="/app/keys">
                 <KeyRound className="size-3.5" />
@@ -291,7 +307,7 @@ export default function Docs() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:px-6 lg:grid-cols-[200px_minmax(0,1fr)] lg:py-14">
         <aside className="hidden lg:block">
           <nav className="sticky top-24 space-y-1">
-            <p className="px-2 pb-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+            <p className="px-2 pb-2 text-xs font-medium text-muted-foreground">
               목차
             </p>
             {TOC.map((item) => (
@@ -332,10 +348,7 @@ export default function Docs() {
             </div>
             <div className="mt-7 flex flex-wrap gap-2">
               <Button asChild>
-                <Link to="/app/keys">
-                  API 키 발급
-                  <ArrowRight className="size-4" />
-                </Link>
+                <Link to="/app/keys">API 키 발급</Link>
               </Button>
               <Button variant="outline" asChild>
                 <a href="#quickstart">
@@ -388,6 +401,67 @@ export default function Docs() {
                 <code className="font-mono">uuid</code>는 하이픈이 없는 32자리
                 문자열이고, <code className="font-mono">name</code>은 입금자
                 식별을 위해 생성되는 영문 대문자 6자리 문자열입니다.
+              </p>
+            </div>
+          </Section>
+
+          <Section
+            id="app-install"
+            title="Android 앱"
+            description="휴대폰 입금 알림을 서버로 보내는 앱입니다. 키를 발급한 뒤 QR 코드로 기기를 연결합니다."
+          >
+            <div className="space-y-5 rounded-xl border bg-card p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="font-mono text-sm">
+                    EPG-ANDROID {ANDROID_RELEASE_VERSION}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    APK는 GitHub Releases에서만 배포합니다.
+                  </p>
+                </div>
+                <Button size="sm" asChild>
+                  <a
+                    href={ANDROID_RELEASE_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Download className="size-3.5" />
+                    릴리스 페이지 열기
+                  </a>
+                </Button>
+              </div>
+              <ol className="space-y-3 text-sm">
+                <li className="flex gap-3">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold">
+                    1
+                  </span>
+                  <span className="text-muted-foreground">
+                    릴리스 페이지에서 {ANDROID_RELEASE_VERSION} APK를
+                    내려받아 설치합니다.
+                  </span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold">
+                    2
+                  </span>
+                  <span className="text-muted-foreground">
+                    앱을 열고 알림 접근 권한을 허용합니다.
+                  </span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted text-[11px] font-semibold">
+                    3
+                  </span>
+                  <span className="text-muted-foreground">
+                    대시보드에서 키를 발급하고, 발급 화면의 QR 코드를 앱으로
+                    스캔합니다.
+                  </span>
+                </li>
+              </ol>
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                연결이 끝나면 앱이 감지한 입금 알림이 이 계정으로 전달됩니다.
+                키를 삭제하면 연결된 기기의 전송도 함께 중단됩니다.
               </p>
             </div>
           </Section>
@@ -740,7 +814,7 @@ export default function Docs() {
               <div className="flex items-start gap-3">
                 <BookOpen className="mt-0.5 size-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">API 키가 필요하신가요?</p>
+                  <p className="text-sm font-medium">키를 아직 발급하지 않았나요?</p>
                   <p className="text-xs text-muted-foreground">
                     대시보드에서 바로 발급하고 QR 코드로 기기를 연결할 수
                     있습니다.
@@ -748,10 +822,7 @@ export default function Docs() {
                 </div>
               </div>
               <Button size="sm" asChild>
-                <Link to="/app/keys">
-                  API 키 발급
-                  <ArrowRight className="size-3.5" />
-                </Link>
+                <Link to="/app/keys">키 발급</Link>
               </Button>
             </div>
           </Section>

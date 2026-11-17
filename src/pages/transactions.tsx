@@ -156,7 +156,7 @@ export default function Transactions() {
     try {
       const firstPage = await listRemittances(filters, 0)
       if (firstPage.totalPages === 0) {
-        toast("내보낼 내역이 없습니다")
+        toast("내려받을 내역이 없습니다")
         return
       }
 
@@ -178,7 +178,7 @@ export default function Transactions() {
       )
 
       exportCsv(sortByLatest([...rowsWithTime].reverse()))
-      toast.success(`CSV 파일을 내보냈습니다 (${rowsWithTime.length}건)`)
+      toast.success(`CSV 파일을 내려받았습니다 (${rowsWithTime.length}건)`)
     } catch (error) {
       toast.error(errorMessage(error))
     } finally {
@@ -234,7 +234,7 @@ export default function Transactions() {
           입금 내역
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          휴대폰 알림으로 감지된 입금 이벤트를 확인합니다.
+          알림으로 접수된 입금을 기간과 금액, 확인 상태로 추립니다.
         </p>
       </div>
 
@@ -248,7 +248,7 @@ export default function Transactions() {
 
       <Card>
         <CardHeader>
-          <CardTitle>전체 거래</CardTitle>
+          <CardTitle>거래 내역</CardTitle>
           <CardDescription>
             총 {state.totalElements.toLocaleString("ko-KR")}건
           </CardDescription>
@@ -260,7 +260,7 @@ export default function Transactions() {
               disabled={exporting || state.totalElements === 0}
             >
               <Download className="size-3.5" />
-              {exporting ? "내보내는 중…" : "CSV 내보내기"}
+              {exporting ? "내려받는 중" : "CSV로 내려받기"}
             </Button>
           </CardAction>
         </CardHeader>
@@ -338,7 +338,7 @@ export default function Transactions() {
 
           {state.loading && state.items.length === 0 ? (
             <div className="px-6 py-12 text-center text-sm text-muted-foreground">
-              입금 내역을 불러오는 중…
+              입금 내역을 불러오는 중입니다.
             </div>
           ) : (
             <DepositTable deposits={displayRows} showId />

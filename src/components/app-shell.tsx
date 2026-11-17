@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom"
 import {
   ArrowDownLeft,
+  Download,
   KeyRound,
   LayoutDashboard,
   LogOut,
@@ -25,6 +26,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { UNAUTHORIZED_EVENT, errorMessage } from "@/lib/api"
 import { getCurrentUser, logout, withdraw } from "@/lib/auth"
+import { ANDROID_RELEASE_URL, ANDROID_RELEASE_VERSION } from "@/lib/links"
 
 const NAV_ITEMS = [
   { to: "/app", label: "대시보드", icon: LayoutDashboard, end: true },
@@ -84,10 +86,10 @@ export function AppShell() {
               to={item.to}
               end={item.end}
               className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
-                  isActive && "bg-muted text-foreground",
-                )
+                 cn(
+                   "flex items-center gap-2.5 border-l-2 border-transparent px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
+                   isActive && "border-foreground bg-muted text-foreground",
+                 )
               }
             >
               <item.icon className="size-4" />
@@ -96,6 +98,18 @@ export function AppShell() {
           ))}
         </nav>
         <div className="mt-auto p-3">
+          <a
+            href={ANDROID_RELEASE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="mb-3 flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            <Download className="size-4" />
+            <span className="flex-1">Android 앱</span>
+            <span className="font-mono text-xs">
+              {ANDROID_RELEASE_VERSION}
+            </span>
+          </a>
           <Separator className="mb-3" />
           <div className="flex items-center gap-2 pb-1">
             <Avatar className="size-8">
@@ -105,7 +119,7 @@ export function AppShell() {
             </Avatar>
             <div className="min-w-0 flex-1">
               <div className="truncate text-sm font-medium">{user.username}</div>
-              <div className="text-xs text-muted-foreground">개발자 계정</div>
+              <div className="text-xs text-muted-foreground">계정</div>
             </div>
             <Button
               variant="ghost"
@@ -148,6 +162,16 @@ export function AppShell() {
                 <span className="hidden sm:inline">{item.label}</span>
               </NavLink>
             ))}
+            <Button variant="ghost" size="icon-sm" asChild>
+              <a
+                href={ANDROID_RELEASE_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Android 앱 다운로드"
+              >
+                <Download className="size-4" />
+              </a>
+            </Button>
             <Button
               variant="ghost"
               size="icon-sm"

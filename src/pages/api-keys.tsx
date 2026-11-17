@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import {
-  BookOpen,
-  Copy,
-  Plus,
-  Trash2,
-  TriangleAlert,
-} from "lucide-react"
+import { BookOpen, Copy, Plus, Trash2, TriangleAlert } from "lucide-react"
 import QRCode from "react-qr-code"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
@@ -66,6 +60,10 @@ import {
   type ExpDay,
 } from "@/lib/api-keys"
 import { formatDateValue } from "@/lib/format"
+import {
+  ANDROID_RELEASE_URL,
+  ANDROID_RELEASE_VERSION,
+} from "@/lib/links"
 
 export default function ApiKeys() {
   const [keys, setKeys] = useState<ApiKey[]>([])
@@ -155,7 +153,8 @@ export default function ApiKeys() {
             API 키
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            서비스와 Android 앱을 연결할 API 키를 관리합니다.
+            Android 앱과 서버를 연결하는 키입니다. 원문은 발급할 때 한 번만
+            보입니다.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -183,13 +182,13 @@ export default function ApiKeys() {
       <div className="grid items-start gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>발급된 API 키</CardTitle>
+            <CardTitle>발급한 키</CardTitle>
             <CardDescription>총 {keys.length}개</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 px-0">
             {loading ? (
               <div className="px-6 py-12 text-center text-sm text-muted-foreground">
-                API 키를 불러오는 중…
+                API 키를 불러오는 중입니다.
               </div>
             ) : keys.length > 0 ? (
               <Table className="min-w-[560px]">
@@ -246,12 +245,12 @@ export default function ApiKeys() {
               </Table>
             ) : (
               <div className="px-6 py-12 text-center text-sm text-muted-foreground">
-                발급된 API 키가 없습니다.
+                아직 발급한 키가 없습니다. 키를 발급하고 앱을 연결하세요.
               </div>
             )}
             <p className="px-6 text-xs leading-relaxed text-muted-foreground">
-              API 키 원문은 발급 시에만 확인할 수 있습니다. 유출된 키는 삭제 후
-              다시 발급하세요.
+              키 원문은 발급 화면에서만 볼 수 있습니다. 노출된 키는 삭제하고
+              새로 발급하세요.
             </p>
           </CardContent>
         </Card>
@@ -264,7 +263,7 @@ export default function ApiKeys() {
               <DialogHeader>
                 <DialogTitle>API 키 발급</DialogTitle>
                 <DialogDescription>
-                  이름과 유효기간을 입력해 키를 발급합니다.
+                  이름과 유효기간을 정해 키를 만듭니다.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
@@ -274,7 +273,7 @@ export default function ApiKeys() {
                     id="keyName"
                     value={name}
                     onChange={(event) => setName(event.target.value)}
-                    placeholder="예: 커머스 프로젝트"
+                    placeholder="예: 결제 서버"
                   />
                 </div>
                 <div className="space-y-2">
@@ -315,15 +314,28 @@ export default function ApiKeys() {
           ) : (
             <>
               <DialogHeader>
-                <DialogTitle>API 키가 발급되었습니다</DialogTitle>
+                <DialogTitle>키가 발급되었습니다</DialogTitle>
                 <DialogDescription>
-                  QR 코드를 Android 앱에서 스캔해 기기를 연결하세요.
+                  아래 QR 코드를 Android 앱에서 스캔하면 기기가 연결됩니다.
                 </DialogDescription>
               </DialogHeader>
-              <div className="flex justify-center">
-                <div className="rounded-lg border bg-white p-3">
-                  <QRCode value={issued.key} size={168} />
+              <div className="space-y-2">
+                <div className="flex justify-center">
+                  <div className="rounded-lg border bg-white p-3">
+                    <QRCode value={issued.key} size={168} />
+                  </div>
                 </div>
+                <p className="text-center text-xs text-muted-foreground">
+                  앱이 없다면{" "}
+                  <a
+                    href={ANDROID_RELEASE_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-foreground underline underline-offset-4"
+                  >
+                    EPG-ANDROID {ANDROID_RELEASE_VERSION} 설치
+                  </a>
+                </p>
               </div>
               <div className="space-y-1.5">
                 <Label>API 키</Label>
@@ -343,10 +355,10 @@ export default function ApiKeys() {
               </div>
               <Alert>
                 <TriangleAlert />
-                <AlertTitle>이 키는 다시 확인할 수 없습니다</AlertTitle>
+                <AlertTitle>키를 지금 복사해 두세요</AlertTitle>
                 <AlertDescription>
-                  창을 닫기 전에 안전한 곳에 복사해 두세요. 분실 시 키를 삭제하고
-                  다시 발급해야 합니다.
+                  이 화면을 닫으면 다시 볼 수 없습니다. 분실하면 키를 삭제하고
+                  새로 발급해야 합니다.
                 </AlertDescription>
               </Alert>
               <DialogFooter>

@@ -24,7 +24,7 @@ export function DepositTable({
   if (deposits.length === 0) {
     return (
       <div className="px-6 py-12 text-center text-sm text-muted-foreground">
-        조건에 맞는 입금 내역이 없습니다.
+        조건에 맞는 입금이 없습니다.
       </div>
     )
   }
@@ -66,7 +66,7 @@ export function DepositTable({
             </TableCell>
             <TableCell className="py-3 pr-6 text-right tabular-nums text-muted-foreground">
               {d.at === null
-                ? "—"
+                ? "시각 없음"
                 : time === "relative"
                   ? timeAgo(d.at)
                   : formatDateTime(d.at)}
