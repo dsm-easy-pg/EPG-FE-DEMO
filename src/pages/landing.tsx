@@ -90,9 +90,12 @@ function DashboardPreview() {
     <div className="relative mx-auto mt-14 max-w-[1040px] animate-rise rise-4 md:mt-20">
       <div className="surface-shadow overflow-hidden rounded-[28px] border border-white/80 bg-card">
         <div className="flex h-14 items-center gap-2.5 border-b border-border/70 px-4 md:px-5">
-          <span className="grid size-7 place-items-center rounded-lg bg-primary font-mono text-[11px] font-semibold text-primary-foreground">
-            ₩
-          </span>
+          <img
+            src="/easy-pg-logo.png"
+            alt=""
+            aria-hidden="true"
+            className="h-6 w-auto max-w-none shrink-0 object-contain"
+          />
           <span className="text-sm font-medium">입금 현황</span>
           <span className="hidden font-mono text-[10px] text-muted-foreground sm:inline">
             easypg.app / dashboard
@@ -223,9 +226,12 @@ function PhonePreview() {
           <span>100%</span>
         </div>
         <div className="mt-4 flex items-center gap-2">
-          <span className="grid size-8 place-items-center rounded-[10px] bg-primary text-[11px] font-semibold text-primary-foreground">
-            ₩
-          </span>
+          <img
+            src="/easy-pg-logo.png"
+            alt=""
+            aria-hidden="true"
+            className="h-7 w-auto max-w-none shrink-0 object-contain"
+          />
           <div>
             <p className="text-[11px] font-semibold">EPG Android</p>
             <p className="text-[9px] text-muted-foreground">알림 연결됨</p>
