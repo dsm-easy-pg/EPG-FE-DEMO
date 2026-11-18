@@ -70,8 +70,7 @@ function AuthForm({
   return (
     <>
       <DialogHeader>
-        <p className="eyebrow">EASY-PG ACCOUNT</p>
-        <DialogTitle className="mt-1 text-[28px] leading-[1.08] font-medium tracking-[-0.045em]">
+        <DialogTitle className="text-[28px] leading-[1.08] font-medium tracking-[-0.045em]">
           {mode === "signup" ? "계정을 만들어 시작하세요." : "다시 만나서 반가워요."}
         </DialogTitle>
         <DialogDescription>

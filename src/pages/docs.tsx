@@ -298,8 +298,7 @@ export default function Docs() {
 
         <main className="min-w-0 space-y-16">
           <section>
-            <p className="eyebrow">DEVELOPER DOCS</p>
-            <h1 className="mt-4 text-[42px] leading-[1.03] font-medium tracking-[-0.05em] md:text-[56px]">
+            <h1 className="text-[42px] leading-[1.03] font-medium tracking-[-0.05em] md:text-[56px]">
               EASY-PG API
             </h1>
             <p className="mt-5 max-w-[620px] text-[15px] leading-7 text-muted-foreground md:text-base md:leading-8">

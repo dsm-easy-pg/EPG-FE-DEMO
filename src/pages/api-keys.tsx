@@ -3,7 +3,6 @@ import { Link } from "react-router-dom"
 import { BookOpen, Copy, Plus, Trash2, TriangleAlert } from "lucide-react"
 import QRCode from "react-qr-code"
 import { toast } from "sonner"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -149,14 +148,9 @@ export default function ApiKeys() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="eyebrow">API KEYS</p>
-          <h1 className="mt-3 text-[30px] leading-tight font-semibold tracking-[-0.045em] md:text-[34px]">
+          <h1 className="text-[30px] leading-tight font-semibold tracking-[-0.045em] md:text-[34px]">
             API 키
           </h1>
-          <p className="mt-1.5 max-w-[560px] text-sm text-muted-foreground">
-            Android 앱과 서버를 연결하는 키입니다. 원문은 발급할 때 한 번만
-            보입니다.
-          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
@@ -213,21 +207,24 @@ export default function ApiKeys() {
                         <TableCell className="px-4 py-3 font-mono text-xs text-muted-foreground">
                           #{key.id}
                         </TableCell>
-                        <TableCell
-                          className={
-                            expired
-                              ? "px-4 py-3 tabular-nums text-destructive"
-                              : "px-4 py-3 tabular-nums"
-                          }
-                        >
+                        <TableCell className="px-4 py-3 tabular-nums">
                           {formatDateValue(key.expDate)}
                         </TableCell>
                         <TableCell className="px-4 py-3">
-                          {expired ? (
-                            <Badge variant="destructive">만료</Badge>
-                          ) : (
-                            <Badge variant="success">활성</Badge>
-                          )}
+                          <span className="inline-flex items-center gap-2 text-sm">
+                            <span
+                              className={`size-1.5 rounded-full ${
+                                expired ? "bg-muted-foreground/50" : "bg-success"
+                              }`}
+                            />
+                            <span
+                              className={
+                                expired ? "text-muted-foreground" : "text-foreground"
+                              }
+                            >
+                              {expired ? "만료" : "활성"}
+                            </span>
+                          </span>
                         </TableCell>
                         <TableCell className="py-3 pr-6">
                           <Button

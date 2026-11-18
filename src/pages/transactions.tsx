@@ -230,13 +230,9 @@ export default function Transactions() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="eyebrow">TRANSACTIONS</p>
-        <h1 className="mt-3 text-[30px] leading-tight font-semibold tracking-[-0.045em] md:text-[34px]">
+        <h1 className="text-[30px] leading-tight font-semibold tracking-[-0.045em] md:text-[34px]">
           입금 내역
         </h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          알림으로 접수된 입금을 기간과 금액, 확인 상태로 추립니다.
-        </p>
       </div>
 
       {state.error && (

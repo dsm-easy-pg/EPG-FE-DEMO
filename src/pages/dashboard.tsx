@@ -155,18 +155,10 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="eyebrow">DASHBOARD</p>
-          <h1 className="mt-3 text-[30px] leading-tight font-semibold tracking-[-0.045em] md:text-[34px]">
+          <h1 className="text-[30px] leading-tight font-semibold tracking-[-0.045em] md:text-[34px]">
             입금 현황
           </h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            알림으로 접수된 입금을 15초마다 새로 불러옵니다.
-          </p>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-[11px] font-medium text-muted-foreground ring-1 ring-border/80">
-          <span className="size-1.5 rounded-full bg-success" />
-          15초마다 갱신
-        </span>
       </div>
 
       {state.error && (
@@ -287,7 +279,6 @@ export default function Dashboard() {
         <Card className="xl:col-span-2">
           <CardHeader>
             <CardTitle>최근 입금</CardTitle>
-            <CardDescription>15초마다 자동 갱신</CardDescription>
             <CardAction>
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/app/transactions">전체 내역</Link>
