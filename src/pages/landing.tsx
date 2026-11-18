@@ -158,7 +158,7 @@ export default function Landing() {
                 <article
                   key={step.title}
                   data-reveal
-                  style={{ transitionDelay: `${index * 90}ms` }}
+                  style={{ transitionDelay: `${index * 130}ms` }}
                   className="md:border-l md:px-8 first:md:border-l-0 first:md:pl-0"
                 >
                   <span className="block h-px w-8 bg-primary" aria-hidden="true" />
@@ -209,7 +209,7 @@ export default function Landing() {
                 </Button>
               </div>
             </div>
-            <div data-reveal style={{ transitionDelay: "90ms" }}>
+            <div data-reveal style={{ transitionDelay: "140ms" }}>
               <ApiPreview />
             </div>
           </div>
